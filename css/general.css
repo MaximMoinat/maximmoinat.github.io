@@ -1,0 +1,14 @@
+* {
+    font-family: Ubuntu, "Lucida Sans Unicode", Helvetica, Arial, sans-serif;
+}
+
+body {
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
+div.centered {
+    text-align: center;
+}
