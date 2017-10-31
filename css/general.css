@@ -12,3 +12,20 @@ body {
 div.centered {
     text-align: center;
 }
+
+input.performance {
+    display: block;
+    margin: 0;
+    width: 25%;
+    box-shadow: none;
+    border-radius: none;
+    padding: 3px;
+    border: none;
+    border-bottom: solid 2px #c9c9c9;
+    transition: border 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-bottom: solid 2px #969696;
+}
