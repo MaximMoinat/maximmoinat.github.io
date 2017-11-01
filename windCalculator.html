@@ -17,16 +17,16 @@
 
 <div id="slidecontainer" class="centered">
     <label class="sliderLabel">Wind</label>
-    <input type="range" min="-6" max="6" class="slider" data-bind="value: wind, valueUpdate: 'input'">
-    <output class="sliderNumber" data-bind="text: wind">0.0</output> m/s
+    <input type="range" min="-40" max="40" class="slider" data-bind="value: windRaw, valueUpdate: 'input'">
+    <output class="sliderNumber" data-bind="text: windDisplay">0.0</output> m/s
 </div>
 <table class="table table-condensed table-hover table-striped">
     <thead>
     <tr>
         <th>Event</th>
-        <th>Performance at <strong><span data-bind="text: wind"></span></strong> m/s</th>
-        <th>Performance at 0.0 m/s</th>
-        <th>Performance at +2.0 m/s</th>
+        <th>Performance at <strong><span data-bind="text: windDisplay"></span></strong> m/s</th>
+        <th>at 0.0 m/s</th>
+        <th>at +2.0 m/s</th>
     </tr>
     </thead>
 
@@ -35,10 +35,10 @@
         <td><label data-bind="text: name">100m</label></td>
         <td><input type="number" class="performance" data-bind="value: performance, valueUpdate: 'input'"></td>
         <td>
-            <output data-bind="text: performanceZeroRounded">?</output>
+            <output data-bind="text: performanceZeroDisplay">?</output>
         </td>
         <td>
-            <output data-bind="text: maxLegalPerformanceRounded"></output>
+            <output data-bind="text: maxLegalPerformanceDisplay"></output>
         </td>
     </tr>
     </tbody>

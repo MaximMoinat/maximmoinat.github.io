@@ -12,26 +12,29 @@ define(['lib/knockout-3.4.2'], function(ko) {
 
         this.wind = ko.observable(0);
 
-        this.correction = ko.computed(function() {
-            return this.a * this.wind() + this.b * (this.wind() ^ 2);
+        this.correction = ko.pureComputed(function() {
+            return this.a * this.wind() + this.b * Math.pow(this.wind(), 2);
         },this);
 
-        this.performanceZero = ko.computed(function() {
+        this.performanceZero = ko.pureComputed(function() {
             return Number(this.performance()) + this.correction();
         },this);
 
-        this.performanceZeroRounded = ko.computed(function() {
-            return this.performanceZero().toFixed(2);
-        },this);
-
-        this.maxPerformanceLegal = ko.computed(function() {
+        this.maxPerformanceLegal = ko.pureComputed(function() {
             var correctionZeroToTwo = this.a * 2 + this.b * (2 ^ 2);
             return this.performanceZero() - correctionZeroToTwo;
         },this);
 
-        this.maxLegalPerformanceRounded = ko.computed(function() {
-            return this.maxPerformanceLegal().toFixed(2);
+        this.performanceZeroDisplay = ko.pureComputed(function() {
+            return this.getDisplayValue(this.performanceZero());
         },this);
 
+        this.maxLegalPerformanceDisplay = ko.pureComputed(function() {
+            return this.getDisplayValue(this.maxPerformanceLegal());
+        },this);
+
+        this.getDisplayValue = function(value) {
+            return value.toFixed(2);
+        }
     };
 });
