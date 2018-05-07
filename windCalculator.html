@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/general.css">
     <link rel="stylesheet" type="text/css" href="css/slider.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9" crossorigin="anonymous">
     <title>Wind Calculator</title>
 </head>
 <body>
@@ -21,7 +22,7 @@ In this study, this relationship is quantified empirically for all five horizont
 
 <div id="slidecontainer" class="centered">
     <label class="sliderLabel">Wind</label>
-    <input type="range" min="-40" max="40" class="slider" data-bind="value: windRaw, valueUpdate: 'input'">
+    <input type="range" min="-80" max="80" class="slider" data-bind="value: windRaw, valueUpdate: 'input'">
     <output class="sliderNumber" data-bind="text: windDisplay">0.0</output> m/s
 </div>
 <table class="table table-condensed table-hover table-striped">
@@ -48,5 +49,12 @@ In this study, this relationship is quantified empirically for all five horizont
     </tbody>
 
 </table>
+<p><i class="fas fa-info"></i> <b>How to use this calculator</b><br>
+For a given result, input the the performance in one of the boxes. Select the wind speed with the slider.
+    Then, you can see what, according to the model proposed in the article, the result would have been at 
+    a wind speed of 0.0 m/s and at 2.0 m/s (maximum allowed wind assistance).
+    For example, a 200m of 21.63 with a wind speed of +0.2, tells you that it would have been
+    21.65 without wind and 21.51 with 2.0 m/s.
+    For each event, you can input a performance which you want to study. </p>
 </body>
 </html>
