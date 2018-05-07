@@ -7,21 +7,22 @@ define(['lib/knockout-3.4.2'], function(ko) {
         this.name = data.name;
         this.a = data.a;
         this.b = data.b;
+        this.cp = data.cp || 0;
 
-        this.performance = ko.observable(data.default);
+        this.performanceIn = ko.observable(data.default);
 
         this.wind = ko.observable(0);
 
-        this.correction = ko.pureComputed(function() {
-            return this.a * this.wind() + this.b * Math.pow(this.wind(), 2);
-        },this);
+        this.correction = function(performance, wind) {
+            return (this.a + this.cp * performance) * wind + this.b * Math.pow(wind, 2);
+        }
 
         this.performanceZero = ko.pureComputed(function() {
-            return Number(this.performance()) + this.correction();
+            return Number(this.performanceIn()) + this.correction(this.performanceIn(), this.wind());
         },this);
 
         this.maxPerformanceLegal = ko.pureComputed(function() {
-            var correctionZeroToTwo = this.a * 2 + this.b * (2 ^ 2);
+            var correctionZeroToTwo = this.correction(this.performanceIn(), 2.0);
             return this.performanceZero() - correctionZeroToTwo;
         },this);
 

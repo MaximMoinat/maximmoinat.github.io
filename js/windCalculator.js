@@ -4,11 +4,11 @@
 
 require(['lib/knockout-3.4.2', 'model/WindEvent'], function (ko, WindEvent) {
     var input = [
-        {"name": "100m",        "a":0.071, "b":-0.0042, "default":9.58},
+        {"name": "100m",        "a":-0.0449, "b":-0.0042, "cp":0.009459, "default":9.58},
         {"name": "200m",        "a":0.090, "b":-0.010,  "default":19.19},
         {"name": "100mH",       "a":0.093, "b":-0.010,  "default":12.80},
         {"name": "110mH",       "a":0.093, "b":-0.010,  "default":12.20},
-        {"name": "Long Jump",   "a":0.032, "b":-0.0012, "default":8.95},
+        {"name": "Long Jump",   "a":0.029, "b":0, "default":8.95},
         {"name": "Triple Jump", "a":0.069, "b":-0.009,  "default":18.29}
     ];
 
