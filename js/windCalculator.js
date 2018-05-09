@@ -8,8 +8,8 @@ require(['lib/knockout-3.4.2', 'model/WindEvent'], function (ko, WindEvent) {
         {"name": "200m",        "a":0.090, "b":-0.010,  "default":19.19},
         {"name": "100mH",       "a":0.093, "b":-0.010,  "default":12.20},
         {"name": "110mH",       "a":0.093, "b":-0.010,  "default":12.80},
-        {"name": "Long Jump",   "a":0.029, "b":0, "default":8.95},
-        {"name": "Triple Jump", "a":0.069, "b":-0.009,  "default":18.29}
+        {"name": "Long Jump",   "a":-0.029, "b":0, "default":8.95},
+        {"name": "Triple Jump", "a":-0.069, "b":-0.009,  "default":18.29}
     ];
 
     appViewModel = function appViewModel() {
