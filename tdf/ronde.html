@@ -15,49 +15,42 @@
 
             if (minutes < 10) {minutes = "0"+minutes;}
             if (seconds < 10) {seconds = "0"+seconds;}
-
-            return minutes+':'+seconds;
+            
+            if (this <= 0) {
+                return minutes+':'+seconds;
+            } else {
+                return '-'+minutes+':'+seconds;
+            }
         };
 
         $.getJSON("data.json", function(json) {
             // Maximum Number of stages in the data.
             const n_stages = json.stageNames.length;
-            json.stageNames.unshift('-');
 
-            const referenceArray = json.riders.find(function(x) {return x.bib === '1';}).seconds_behind.slice(); // Copy
-            referenceArray.unshift(0);
+            const referenceArray = json.riders.find(function(x) {return x.bib === '1';}).seconds_behind.slice(); // Slice copies the array
 
-            // TODO: bib selector
             var chartData = json.riders.map(function(x) {
-                x.seconds_behind.unshift(0);
-                x.placings['itg'].unshift(0);
-
                 x.data = x.seconds_behind;
                 var prev = 0;
                 x.changes = [];
                 for (var i = 0; i < x.data.length; i++) {
                     x.data[i] = x.data[i] - referenceArray[i];
-
                     x.changes.push(x.data[i] - prev);
                     prev = x.data[i];
                 }
-                x.place = x.placings['itg'][n_stages];
+                x.place = x.placings['itg'][n_stages-1];
                 x.placings = x.placings['itg'];
 
-                // Kopman, the leader, Dumoulin, not sprint kopmannen
-                var isTeamLeader = x.bib[x.bib.length-1] === '1';
-                x.visible = (isTeamLeader || parseInt(x.place) <= 3) // || x.bib === '32') && ['41', '111', '151', '201', '171', '131', '181', '211', '31', '81', '11'].indexOf(x.bib) < 0;
                 x.visible = parseInt(x.place) <= 5
-
                 return x;
             }).sort(function(a, b){
-                if (a.seconds_behind.length <= n_stages) {
+                if (a.seconds_behind.length < n_stages) {
                     return 1
                 }
-                if (b.seconds_behind.length <= n_stages) {
+                if (b.seconds_behind.length < n_stages) {
                     return -1
                 }
-                return a.seconds_behind[n_stages]-b.seconds_behind[n_stages];
+                return a.seconds_behind[n_stages-1]-b.seconds_behind[n_stages-1];
             });
 
             Highcharts.chart('container', {
@@ -67,7 +60,7 @@
                 },
 
                 subtitle: {
-                    text: 'Time differences in the general classification compared to Geraint Thomas #1'
+                    text: 'Time differences in the general classification after each stage, compared to Geraint Thomas.<br>Stages types: <b>F</b>lat, <b>H</b>ills, <b>M</b>ountains, <b>T</b>ime<b>T</b>rial, <b>T</b>eam <b>T</b>ime <b>T</b>rial.'
                 },
 
                 series: chartData,
@@ -108,17 +101,22 @@
                     formatter: function () {
                         var valueText = '';
                         if (this.y !== 0) {
-                            valueText = '<b> ' + this.y.toMMSS() + '</b>';
+                            valueText = 'Time to Geraint:<b> ' + this.y.toMMSS() + '</b>';
                         }
+                        
                         const pointData = chartData.find(row => row.name === this.series.name);
-
-                        var sign = pointData.changes[this.point.index] > 0 ? '+' : '-';
+                        var lostWonText = '';
+                        if (pointData.changes[this.point.index] != 0 ) {
+                            var sign = pointData.changes[this.point.index] > 0 ? '' : '+';
+                            lostWonText = '<i>Time lost/won: ' + sign + pointData.changes[this.point.index].toMMSS() + '</i>';
+                        }
 
                         return '<b>' + this.x + '</b><br>' +
                             '<span style="color:' + this.series.color + '">\u25CF</span> ' +
                             '<b>' + pointData.placings[this.point.index] + '</b> ' +
                             this.series.name + ' (' + pointData.bib + '-' + pointData.team_code + ')<br>' +
-                            valueText + '  <i>' + sign + pointData.changes[this.point.index].toMMSS() + '</i>';
+                            ' ' + valueText + '<br>' +
+                            ' ' + lostWonText;
                     }
                 }
 
