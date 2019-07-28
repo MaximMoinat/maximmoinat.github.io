@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+
+    <div id="container" style="min-width: 600px; height: 800px; margin: 0 auto"></div>
+
+    <script type="text/javascript">
+        Number.prototype.toMMSS = function () {
+            var absSeconds = Math.abs(this);
+            var minutes = Math.floor(absSeconds / 60);
+            var seconds = absSeconds - (minutes * 60);
+
+            if (minutes < 10) {minutes = "0"+minutes;}
+            if (seconds < 10) {seconds = "0"+seconds;}
+
+            return minutes+':'+seconds;
+        };
+
+        $.getJSON("data.json", function(json) {
+            // Maximum Number of stages in the data.
+            const n_stages = json.stageNames.length;
+            json.stageNames.unshift('-');
+
+            const referenceArray = json.riders.find(function(x) {return x.bib === '1';}).seconds_behind.slice(); // Copy
+            referenceArray.unshift(0);
+
+            // TODO: bib selector
+            var chartData = json.riders.map(function(x) {
+                x.seconds_behind.unshift(0);
+                x.placings['itg'].unshift(0);
+
+                x.data = x.seconds_behind;
+                var prev = 0;
+                x.changes = [];
+                for (var i = 0; i < x.data.length; i++) {
+                    x.data[i] = x.data[i] - referenceArray[i];
+
+                    x.changes.push(x.data[i] - prev);
+                    prev = x.data[i];
+                }
+                x.place = x.placings['itg'][n_stages];
+                x.placings = x.placings['itg'];
+
+                // Kopman, the leader, Dumoulin, not sprint kopmannen
+                var isTeamLeader = x.bib[x.bib.length-1] === '1';
+                x.visible = (isTeamLeader || parseInt(x.place) <= 3) // || x.bib === '32') && ['41', '111', '151', '201', '171', '131', '181', '211', '31', '81', '11'].indexOf(x.bib) < 0;
+                x.visible = parseInt(x.place) <= 5
+
+                return x;
+            }).sort(function(a, b){
+                if (a.seconds_behind.length <= n_stages) {
+                    return 1
+                }
+                if (b.seconds_behind.length <= n_stages) {
+                    return -1
+                }
+                return a.seconds_behind[n_stages]-b.seconds_behind[n_stages];
+            });
+
+            Highcharts.chart('container', {
+
+                title: {
+                    text: 'Le Tour de France 2019'
+                },
+
+                subtitle: {
+                    text: 'Time differences in the general classification compared to Geraint Thomas #1'
+                },
+
+                series: chartData,
+
+                xAxis: {
+                    categories: json.stageNames
+                },
+
+                yAxis: {
+                    title: {
+                        text: 'Time difference (sec)'
+                    },
+                    type: 'time',
+                    labels: {
+                        formatter: function () {
+                            var time = this.value;
+                            return time.toMMSS();
+                        }
+                    },
+                    dateTimeLabelFormats: {
+                        second: '%M:%S',
+                        minute: '%M:%S',
+                        hour: '%M:%S.%L'
+                    },
+                    tickInterval: 60,
+                    reversed: true,
+                    showFirstLabel: false,
+                    showLastLabel: true
+                },
+
+                legend: {
+                    enabled: true,
+                    layout: 'horizontal'
+                },
+
+                tooltip: {
+                    valueSuffix: 'Points',
+                    formatter: function () {
+                        var valueText = '';
+                        if (this.y !== 0) {
+                            valueText = '<b> ' + this.y.toMMSS() + '</b>';
+                        }
+                        const pointData = chartData.find(row => row.name === this.series.name);
+
+                        var sign = pointData.changes[this.point.index] > 0 ? '+' : '-';
+
+                        return '<b>' + this.x + '</b><br>' +
+                            '<span style="color:' + this.series.color + '">\u25CF</span> ' +
+                            '<b>' + pointData.placings[this.point.index] + '</b> ' +
+                            this.series.name + ' (' + pointData.bib + '-' + pointData.team_code + ')<br>' +
+                            valueText + '  <i>' + sign + pointData.changes[this.point.index].toMMSS() + '</i>';
+                    }
+                }
+
+            });
+        });
+
+
+
+    </script>
+    
+</head>
+<body>
+  <div id="curve_chart" style="width: 900px; height: 500px"></div>
+</body>
+</html>
+
