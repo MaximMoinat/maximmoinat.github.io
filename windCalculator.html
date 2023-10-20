@@ -41,10 +41,14 @@ In this study, this relationship is quantified empirically for all five horizont
 
     <tbody data-bind="foreach: events">
     <tr>
-        <td><label data-bind="text: name">100m</label></td>
-        <td><input type="number" class="performance" data-bind="value: performanceIn, valueUpdate: 'input'"></td>
         <td>
-            <output data-bind="text: performanceZeroDisplay">?</output>
+            <label data-bind="text: name"></label>
+        </td>
+        <td>
+            <input type="number" class="performance" data-bind="value: performanceIn, valueUpdate: 'input'">
+        </td>
+        <td>
+            <output data-bind="text: performanceZeroDisplay"></output>
         </td>
         <td>
             <output data-bind="text: maxLegalPerformanceDisplay"></output>
